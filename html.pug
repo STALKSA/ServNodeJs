@@ -1,5 +1,64 @@
 doctype html
-html 
-    head 
-    body
-    pre= cow 
+html
+  head
+    title Cow Text
+  body
+    form(action="/" method="POST" accept-charset="UTF-8")
+      input(type="text" name="text" placeholder="Введите текст для коровы")
+      button(type="submit") Отправить
+    pre= cow
+    script.
+      // Добавляем JavaScript-обработчик для формы
+      const form = document.querySelector('form');
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+
+        const textInput = document.querySelector('input[name="text"]');
+        const text = textInput.value; // Не кодируем текст
+
+        try {
+          const response = await fetch('/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+            },
+            body: text=${encodeURIComponent(text)},
+          });
+
+          const cowText = await response.text();
+          const pre = document.querySelector('pre');
+          pre.textContent = cowText;
+        } catch (error) {
+          console.error('Ошибка при запросе:', error);
+        }
+      });
+
+
+//-     в этом коде форма для ввода остается после нажатия кнокпи, но дублируется
+//-
+//- doctype html
+//- html 
+//-     head 
+//-     body
+//-         form(action="/" method="GET" accept-charset="UTF-8")
+//-             input(type="text" name="text" placeholder="Введите текст для коровы")
+//-             button(type="submit") Отправить
+//-         pre= cow
+//-         script.
+//-             // Добавляем JavaScript-обработчик для формы
+//-             const form = document.querySelector('form');
+//-             form.addEventListener('submit', async (event) => {
+//-                 event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+                
+//-                 const textInput = document.querySelector('input[name="text"]');
+//-                 const text = textInput.value; // Не кодируем текст
+                
+//-                 try {
+//-                     const response = await fetch(`/?text=${encodeURIComponent(text)}`);
+//-                     const html = await response.text();
+//-                     const pre = document.querySelector('pre');
+//-                     pre.innerHTML = html;
+//-                 } catch (error) {
+//-                     console.error('Ошибка при запросе:', error);
+//-                 }
+//-             });
